@@ -1,0 +1,163 @@
+﻿@{
+    string userName = string.Empty;
+    if (HttpContext.Current != null && HttpContext.Current.User.Identity.IsAuthenticated)
+    {
+        userName = User.Identity.Name;
+    }
+    var request = HttpContext.Current.Request;
+    var appUrl = HttpRuntime.AppDomainAppVirtualPath;
+    if (appUrl != "/")
+    {
+        appUrl = "/" + appUrl;
+    }
+    var baseUrl = string.Format("{0}://{1}{2}", request.Url.Scheme, request.Url.Authority, appUrl);
+}
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewBag.Title</title>
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <meta name="viewport" content="width=device-width" />
+
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600">
+    <link rel="stylesheet" href="/Font-Awesome-4.7/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/Content/bootstrap.min.css">
+    <link rel="stylesheet" href="/Content/hero-slider-style.css">
+    <link rel="stylesheet" href="/Content/magnific-popup.css">
+    <link rel="stylesheet" href="/Content/templatemo-style.css">
+    <link href="/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+
+
+    <script src="/Scripts/jquery-1.11.2.min.js"></script>
+    <script src="/Scripts/jquery-1.11.2.js"></script>
+    <script src="/Scripts/jquery-ui-1.11.4.js"></script>
+
+
+
+    <script src="~/Scripts/Fonts.js"></script>
+    @Styles.Render("~/Content/bootstrapCss")
+    @Styles.Render("~/Content/bootstrapswitchcss")
+    @Styles.Render("~/Content/notifycss")
+    @Styles.Render("~/Content/fontAwesome")
+    @Styles.Render("~/Content/flagIcon")
+    @Styles.Render("~/Content/animate")
+    @RenderSection("css", required: false)
+    @Styles.Render("~/Content/themescss")
+    @Scripts.Render("~/bundles/modernizr")
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryui")
+    @Scripts.Render("~/Content/datapicker_en")
+    @Scripts.Render("~/Content/datapicker_ro")
+    @Scripts.Render("~/bundles/momentjs")
+    @Scripts.Render("~/bundels/lazyload")
+    @Scripts.Render("~/bundles/listbox")
+    @Scripts.Render("~/bundles/mainjs")
+    <script>
+        var  $baseUrl = '@baseUrl';
+    </script>
+</head>
+<body class="@ViewBag.BodyClass">
+    <!-- header -->
+    <nav class="navbar navbar-inverse navbar-fixed-top" id="header">
+        <div class="navbar-header col-lg-2 col-md-2 col-sm-4 col-xs-12 left_header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <i class="glyphicon glyphicon-cog"></i>
+            </button>
+            <a class="navbar-brand visible-xs" href="@baseUrl"><img src="~/img/logo2.png" /></a>
+        </div>
+        <div class="col-lg-10 col-md-10 col-sm-8 col-xs-12 right_header_block no-padding pull-right">
+            <button type="button" id="sidebar_toggle">
+                <span class="glyphicon glyphicon-menu-hamburger"></span>
+            </button>
+            <button type="button" class="visible-xs" id="sidebar_toggle_mobile">
+                <i class="glyphicon glyphicon-menu-hamburger"></i>
+            </button>
+
+            <div id="navbar" class="navbar-collapse collapse col-lg-10 col-md-9 col-sm-9 col-xs-12 pull-right right_header">
+                <!-- right navbar account -->
+                @Html.Partial("_LoginPartial")
+                <!-- left language flag -->
+            </div>
+        </div>
+    </nav>
+    <!-- Content container -->
+    <div class="wrapper">
+        <!-- left sidebar -->
+        <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12 sidebar">
+            <a href="#" class="visible-xs" id="sidebar_toggle_close">
+                <i class="glyphicon glyphicon-remove" aria-hidden="true"></i>
+            </a>
+            <div class="sidebar_content">
+                <a class="navbar-brand" href="#"><div class="logo_block"><img src="~/img/logo2.png" /></div></a>
+                <ul class="profile">
+                    <li id="icon">
+                        <img src="~/img/user.png" id="avatarImgLeft" />
+                    </li>
+                    <li id="right">
+                        <span id="msg">Welcome</span>
+                        <span id="username">@userName</span>
+                    </li>
+                </ul>
+                <ul class="nav nav-sidebar">
+                    <li><a href="@Url.Action("GetImages", "Home")" data-path="images"><i class="fas fa-images" aria-hidden="true"></i>Album</a></li>
+                    <li><a href="@Url.Action("Index", "Photo")" data-path="photo"><i class="fas fa-camera-retro" aria-hidden="true"></i>Take Photo</a></li>
+                    <li><a href="@Url.Action("Index", "Import")" data-path="import"><i class="fas fa-file-import" aria-hidden="true"></i>Import Image</a></li>
+                    @*<li><a href="@Url.Action("Index", "Posts")" data-path="post"><i class="fa fa-home animated fadeIn" aria-hidden="true"></i>Posts</a></li>
+        <li><a href="@Url.Action("Index", "Joke")" data-path="joke"><i class="fa fa-users animated fadeIn" aria-hidden="true"></i>Jokes</a></li>*@
+
+                </ul>
+            </div>
+            <div class="sidebar_footer">
+                <p>v1</p>
+            </div>
+        </div>
+        <!--end left sidebar -->
+        <div class="col-lg-10 col-md-10 col-sm-8 col-xs-12 pull-right @ViewBag.MainClass" id="main">
+     
+            <div class="row">
+                <!-- page title -->
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                    <div class="page_title">@ViewBag.Title</div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 header_buttons">
+                    @RenderSection("HeaderButton", false)
+                </div>
+            </div>
+            <!-- futured -->
+            @RenderSection("featured", false)
+            <!-- body render -->
+            <div class="body">
+                @RenderBody()
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- footer container -->
+    @*<div class="col-lg-10 col-md-10 col-sm-8 col-xs-12 pull-right" id="footer">
+            <div class="row">
+                <p>@Constant.APP_COPYRIGHT - @Constant.APP_TITLE - v @Constant.APP_VERSION <span>BETA</span></p>
+            </div>
+        </div>*@
+
+    <div id="page-loader">
+        <div class="spinner_logo"><!-- --></div>
+        <div class="spinner"><!-- --></div>
+    </div>
+    <div class="bg_loading" id="loading_notification"></div>
+    @Scripts.Render("~/bundles/jquerycookie")
+    @Scripts.Render("~/bundles/bootstrapcssjs")
+    @Scripts.Render("~/Content/bootstrapswitch")
+    @Scripts.Render("~/Content/notifyjs")
+    @Scripts.Render("~/Content/serializeobject")
+    @RenderSection("scripts", required: false)
+    @Scripts.Render("~/bundles/addtabledata")
+    @Scripts.Render("~/bundles/utilsjs")
+    @Scripts.Render("~/bundles/sidebarcollapse")
+    @Scripts.Render("~/bundles/sidebaractivemenu")
+</body>
+</html>
+

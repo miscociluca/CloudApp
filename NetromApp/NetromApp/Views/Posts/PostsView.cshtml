@@ -1,0 +1,267 @@
+﻿@using NetromApp
+@using Microsoft.AspNet.Identity
+@model IEnumerable<NetromApp.Models.PostModel>
+@{
+    ViewBag.Title = "Posts";
+    var IdUser = string.Empty;
+    if (HttpContext.Current != null && HttpContext.Current.User.Identity.IsAuthenticated)
+    {
+        IdUser = User.Identity.GetUserId().ToString();
+    }
+}
+
+<!-- posts -->
+@section HeaderButton {
+    <a id="add_post" class="link_add_new_item pull-right">
+        <i class="fa fa-plus" aria-hidden="true"></i>Add new Post
+    </a>
+}
+<!-- data tables -->
+<table class="table_block post_block" id="post_table" width="100%">
+    <thead>
+        <tr>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+</table>
+
+@section Css {
+    @Styles.Render("~/bundles/datatablescss")
+    @Styles.Render("~/Content/bootstrapcolorpickercss")
+}
+@section Scripts {
+    @Scripts.Render("~/bundles/datatables")
+    @Scripts.Render("~/bundles/formsjs")
+    <script>
+        $(document).ready(function () {
+            // json encode data model
+            var url_posts = "@Url.Action("GetAllPosts", "Posts")";
+            var postsTable = $('#post_table')
+                .DataTable({
+                    "columns": [
+                        {
+                            data: 'Id',
+                            "render": function (data, type, row) {
+                                return row.Id;
+                            },
+                            "visible": false
+                        },
+                        {
+                            data: 'Imagine',
+                            "render": function (data, type, row) {
+                                var img_url,
+                                    img,
+                                    Title;
+                                    img_url = '@Url.Action("GetImage", "Posts")/' + row.Id;
+                                    img = '<img src="' + img_url + '"/>';
+                                if (img_url == null) {
+                                    img = '<img src="@Url.Action("GetNoImage", "Posts")/small" class="empty" />'
+                                }
+                                Title = row.Titlu!=null? row.Titlu : '';
+
+                                var row = '<div class="item">' +
+                                    '<div class="component_count"><span>' + row.Id + '</span></div>' +
+                                    '<ul class="action_block"' + 'style="background:#000000"' + '>' +
+                                                '<li>' +
+                                                    '<a id="edit" data-toggle="tooltip" data-placement="top" title="Editare"><i class="fa fa-pencil" aria-hidden="true" style="color:#ffffff"></i></a>' +
+                                                '</li>' +
+                                                '<li>' +
+                                                    '<a id="delete" data-toggle="tooltip" data-placement="top" title="Sterge"><i class="fa fa-times" aria-hidden="true" style="color:#ffffff"></i></a>' +
+                                                '</li>' +
+                                    '</ul>' +
+                                            '<a href="@*@Url.Action("GetPost", "Posts")/' + row.Id + '*@#">' + img +
+                                            '<div class="title">' + Title + '</div>' +
+                                    '</a>' +
+                                    '</div>';
+                                return row;
+                            }
+                        },
+                        {
+                            data: 'Titlu',
+                            "render": function (data, type, row) {
+                                return row.Titlu;
+                            },
+                            "visible": false
+                        },
+                        {
+                            data: 'Comments',
+                            "render": function (data, type, row) {
+                                return row.Comments;
+                            },
+                            "visible": false
+                        },
+                                                {
+                            data: 'Likes',
+                            "render": function (data, type, row){
+                                return row.Likes!=null?row.Likes:null;
+                            },
+                            "visible": false
+                        },
+                        {
+                            data: 'HasLike',
+                            "render": function (data, type, row) {
+                                return row.HasLike;
+                            },
+                            "visible": false
+                        }
+                    ],
+                    ajax: url_posts,
+                    "scrollCollapse": true,
+                    "drawCallback": function (settings) {
+                        var api = this.api();
+                        var row = api.rows().nodes();
+                        $(row).addClass("col-lg-2 col-md-3 col-sm-6 col-xs-12");
+                        $.each(settings.aoData, function (k, v) {
+                            $(v.nTr).hover(function () {
+                                $('.action_block', this).slideDown("fast");
+                            }, function () {
+                                $('.action_block', this).slideUp("fast");
+                            });
+
+                            $(v.nTr).find("img").load(function () {
+                                $(this).parent().imagefill();
+                            });
+                        });
+                        $('[data-toggle="tooltip"]').tooltip();
+                    },
+                    "info": true,
+                    "paging": true,
+                    "lengthMenu": [[18, 25, 50, 100, -1], [18, 25, 50, 100, "All"]],
+                    "oLanguage": {
+                        "sSearch": 'Search: &nbsp;',
+                        "sProcessing": "Loading...",
+                        "sLengthMenu": '',
+                        "sInfo": '',
+                        "sInfoEmpty": '',
+                        "sInfoPostFix": "",
+                        'sInfoFiltered': '&nbsp;filtered from total entries',
+                        "sLoadingRecords": 'Loading...',
+                        "sZeroRecords": 'NoRecords',
+                        "sEmptyTable": 'Empty Table',
+                        "oPaginate": {
+                            "sPrevious": '<i class="fa fa-chevron-left" aria-hidden="true"></i>',
+                            "sNext": '<i class="fa fa-chevron-right" aria-hidden="true"></i>'
+                        }
+                    }
+                });
+
+            // click event add
+            $("#add_post")
+                .on("click",
+                    function () {
+                        var datas = postsTable.rows().data();
+                        var $data = {
+                            dialodTitle: 'Add new Post',
+                            postAction: '@Url.Action("AddPost", "Posts")',
+                            dialogButtons: {
+                                save: 'Save',
+                                cancel: 'Cancel'
+                            },
+                            label: {
+                                LabelTitle: 'Titlu',
+                                LabelImage: 'Imagine',
+                                LabelNameEn: 'Like',
+                                LabelComentariu: 'Comentariu'
+                            },
+                            validateMessage: {
+                            },
+                            notify: {
+                                title: 'Add Post',
+                                contentSuccess: 'Post successfully added',
+                                contentError: 'Error'
+                            },
+                            table: postsTable,
+                            datas: datas
+                        };
+
+                        AddPostDialog($data);
+                    });
+
+
+
+
+            // click event edit
+            $('#post_table tbody')
+                .on('click',
+                    'tr td #edit',
+                    function () {
+                        // get data from datatable by id selected
+                        var row = $(this).parents('tr');
+                        var data = postsTable.row(row).data();
+                        var datas2 = postsTable.rows().data();
+                        var $data = {
+                            dialodTitle: 'Update Post',
+                            postAction: '@Url.Action("UpdatePost", "Posts")',
+                            getImageRender: '@Url.Action("GetImage", "Posts")/' + data.Id,
+                            dialogButtons: {
+                                save: 'Save',
+                                cancel: 'Cancel'
+                            },
+                            label: {
+                                LabelTitle: 'Titlu',
+                                LabelImage: 'Imagine',
+                                LabelNameEn: 'Like',
+                                LabelComentariu: 'Comentariu'
+                            },
+                            validateMessage: {
+                            },
+                            notify: {
+                                title: 'Update Post',
+                                contentSuccess: 'Post updated succsessfully',
+                                contentError: 'Error'
+                            },
+                            table: postsTable,
+                            row: postsTable.row(row),
+                            datas: data,
+                            datas2: datas2
+                        }
+                        UpdatePostDialog($data);
+                    });
+
+            // delete
+            $('#post_table')
+                .on('click',
+                    'tr td #delete',
+                    function () {
+                        var row = $(this).parents('tr');
+                        var datas = postsTable.row(row).data();
+
+                        var $data = {
+                            dialodTitle: 'Delete Post',
+                            postAction: '@Url.Action("DeletePost", "Posts")',
+                            dialogButtons: {
+                                ok: 'Ok',
+                                cancel: 'Cancel'
+                            },
+                            notify: {
+                                title: 'Delete Post',
+                                contentSuccess: 'Success deleting Post',
+                                contentError: 'Error on deleting Post'
+                            },
+                            message: 'Confirm Delete Post',
+                            datas: datas,
+                            table: postsTable,
+                            row: postsTable.row(row)
+                        }
+                        DeletePostDialog($data);
+                    });
+
+
+
+        });
+    </script>
+
+    @Scripts.Render("~/bundles/jqueryval")
+
+    @Scripts.Render("~/bundles/jqueryvaladditional")
+    @Scripts.Render("~/Content/dialog/posts")
+    @Scripts.Render("~/bundles/bootstrapcolorpickerjs")
+    @Scripts.Render("~/Content/imagefill")
+    @Scripts.Render("~/Content/imagesloaded")
+}
+

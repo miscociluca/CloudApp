@@ -1,0 +1,192 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="PostModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityContainer Name="PostEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="AspNetRoles" EntityType="PostModel.AspNetRole" />
+    <EntitySet Name="AspNetUsers" EntityType="PostModel.AspNetUser" />
+    <EntitySet Name="Comments" EntityType="PostModel.Comment" />
+    <EntitySet Name="Likes" EntityType="PostModel.Like" />
+    <EntitySet Name="Postaris" EntityType="PostModel.Postari" />
+    <AssociationSet Name="FK_Comments_AspNetUsers" Association="PostModel.FK_Comments_AspNetUsers">
+      <End Role="AspNetUser" EntitySet="AspNetUsers" />
+      <End Role="Comment" EntitySet="Comments" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Likes_AspNetUsers" Association="PostModel.FK_Likes_AspNetUsers">
+      <End Role="AspNetUser" EntitySet="AspNetUsers" />
+      <End Role="Like" EntitySet="Likes" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Postari_AspNetUsers" Association="PostModel.FK_Postari_AspNetUsers">
+      <End Role="AspNetUser" EntitySet="AspNetUsers" />
+      <End Role="Postari" EntitySet="Postaris" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Comments_Postari" Association="PostModel.FK_Comments_Postari">
+      <End Role="Postari" EntitySet="Postaris" />
+      <End Role="Comment" EntitySet="Comments" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Likes_Postari" Association="PostModel.FK_Likes_Postari">
+      <End Role="Postari" EntitySet="Postaris" />
+      <End Role="Like" EntitySet="Likes" />
+    </AssociationSet>
+    <AssociationSet Name="AspNetUserRoles" Association="PostModel.AspNetUserRoles">
+      <End Role="AspNetRole" EntitySet="AspNetRoles" />
+      <End Role="AspNetUser" EntitySet="AspNetUsers" />
+    </AssociationSet>
+    <EntitySet Name="Jokes" EntityType="PostModel.Joke" />
+    <AssociationSet Name="FK_Jokes_Jokes" Association="PostModel.FK_Jokes_Jokes">
+      <End Role="AspNetUser" EntitySet="AspNetUsers" />
+      <End Role="Joke" EntitySet="Jokes" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="AspNetRole">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="AspNetUsers" Relationship="PostModel.AspNetUserRoles" FromRole="AspNetRole" ToRole="AspNetUser" />
+  </EntityType>
+  <EntityType Name="AspNetUser">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+    <Property Name="Email" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
+    <Property Name="EmailConfirmed" Type="Boolean" Nullable="false" />
+    <Property Name="PasswordHash" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="SecurityStamp" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="PhoneNumber" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="PhoneNumberConfirmed" Type="Boolean" Nullable="false" />
+    <Property Name="TwoFactorEnabled" Type="Boolean" Nullable="false" />
+    <Property Name="LockoutEndDateUtc" Type="DateTime" Precision="3" />
+    <Property Name="LockoutEnabled" Type="Boolean" Nullable="false" />
+    <Property Name="AccessFailedCount" Type="Int32" Nullable="false" />
+    <Property Name="UserName" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="Comments" Relationship="PostModel.FK_Comments_AspNetUsers" FromRole="AspNetUser" ToRole="Comment" />
+    <NavigationProperty Name="Likes" Relationship="PostModel.FK_Likes_AspNetUsers" FromRole="AspNetUser" ToRole="Like" />
+    <NavigationProperty Name="Postaris" Relationship="PostModel.FK_Postari_AspNetUsers" FromRole="AspNetUser" ToRole="Postari" />
+    <NavigationProperty Name="AspNetRoles" Relationship="PostModel.AspNetUserRoles" FromRole="AspNetUser" ToRole="AspNetRole" />
+    <NavigationProperty Name="Jokes" Relationship="PostModel.FK_Jokes_Jokes" FromRole="AspNetUser" ToRole="Joke" />
+  </EntityType>
+  <EntityType Name="Comment">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Id_Postare" Type="Int32" Nullable="false" />
+    <Property Name="Id_User" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+    <Property Name="Comentariu" Type="String" MaxLength="3000" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="AspNetUser" Relationship="PostModel.FK_Comments_AspNetUsers" FromRole="Comment" ToRole="AspNetUser" />
+    <NavigationProperty Name="Postari" Relationship="PostModel.FK_Comments_Postari" FromRole="Comment" ToRole="Postari" />
+  </EntityType>
+  <EntityType Name="Like">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Id_Postare" Type="Int32" Nullable="false" />
+    <Property Name="Id_User" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+    <Property Name="LastUpdated" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="AspNetUser" Relationship="PostModel.FK_Likes_AspNetUsers" FromRole="Like" ToRole="AspNetUser" />
+    <NavigationProperty Name="Postari" Relationship="PostModel.FK_Likes_Postari" FromRole="Like" ToRole="Postari" />
+  </EntityType>
+  <EntityType Name="Postari">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Imagine" Type="Binary" Nullable="false" MaxLength="Max" FixedLength="false" />
+    <Property Name="IdUser" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+    <Property Name="Titlu" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+    <Property Name="LastUpdated" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="AspNetUser" Relationship="PostModel.FK_Postari_AspNetUsers" FromRole="Postari" ToRole="AspNetUser" />
+    <NavigationProperty Name="Comments" Relationship="PostModel.FK_Comments_Postari" FromRole="Postari" ToRole="Comment" />
+    <NavigationProperty Name="Likes" Relationship="PostModel.FK_Likes_Postari" FromRole="Postari" ToRole="Like" />
+  </EntityType>
+  <Association Name="FK_Comments_AspNetUsers">
+    <End Type="PostModel.AspNetUser" Role="AspNetUser" Multiplicity="1" />
+    <End Type="PostModel.Comment" Role="Comment" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="AspNetUser">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Comment">
+        <PropertyRef Name="Id_User" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Likes_AspNetUsers">
+    <End Type="PostModel.AspNetUser" Role="AspNetUser" Multiplicity="1" />
+    <End Type="PostModel.Like" Role="Like" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="AspNetUser">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Like">
+        <PropertyRef Name="Id_User" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Postari_AspNetUsers">
+    <End Type="PostModel.AspNetUser" Role="AspNetUser" Multiplicity="1" />
+    <End Type="PostModel.Postari" Role="Postari" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="AspNetUser">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Postari">
+        <PropertyRef Name="IdUser" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Comments_Postari">
+    <End Type="PostModel.Postari" Role="Postari" Multiplicity="1" />
+    <End Type="PostModel.Comment" Role="Comment" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Postari">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Comment">
+        <PropertyRef Name="Id_Postare" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Likes_Postari">
+    <End Type="PostModel.Postari" Role="Postari" Multiplicity="1" />
+    <End Type="PostModel.Like" Role="Like" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Postari">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Like">
+        <PropertyRef Name="Id_Postare" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="AspNetUserRoles">
+    <End Type="PostModel.AspNetRole" Role="AspNetRole" Multiplicity="*" />
+    <End Type="PostModel.AspNetUser" Role="AspNetUser" Multiplicity="*" />
+  </Association>
+  <EntityType Name="Joke">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Titlu" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="true" />
+    <Property Name="Gluma" Type="String" Nullable="false" MaxLength="3000" FixedLength="false" Unicode="true" />
+    <Property Name="Voturi" Type="Int32" />
+    <Property Name="LastUpdated" Type="DateTime" Precision="3" />
+    <Property Name="IdUser" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="AspNetUser" Relationship="PostModel.FK_Jokes_Jokes" FromRole="Joke" ToRole="AspNetUser" />
+  </EntityType>
+  <Association Name="FK_Jokes_Jokes">
+    <End Type="PostModel.AspNetUser" Role="AspNetUser" Multiplicity="1" />
+    <End Type="PostModel.Joke" Role="Joke" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="AspNetUser">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Joke">
+        <PropertyRef Name="IdUser" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema>

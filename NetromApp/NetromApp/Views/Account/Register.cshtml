@@ -1,0 +1,48 @@
+﻿@model NetromApp.Models.RegisterViewModel
+@{
+    ViewBag.Title = "Register";
+}
+
+@using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary("", new { @class = "text-danger" })
+    <div class="text-center">
+        <h1 class="h4 text-gray-900 mb-4">Create an Account!</h1>
+    </div>
+
+    <form class="user">
+        <div class="form-group">
+            @Html.LabelFor(m => m.Email)
+            @Html.TextBoxFor(m => m.Email, new { @class = "form-control form-control-user", placeholder = "Email Address" })
+        </div>
+        <div class="form-group row">
+            <div class="col-sm-6 mb-3 mb-sm-0">
+                @Html.LabelFor(m => m.Password)
+                @Html.PasswordFor(m => m.Password, new { @class = "form-control form-control-user", placeholder = "Password" })
+            </div>
+            <div class="col-sm-6">
+                @Html.LabelFor(m => m.ConfirmPassword)
+                @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control form-control-user", placeholder = "Repeat Password" })
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <div class="btn btn-primary btn-user btn-block">
+                <input type="submit" class="btn btn-default" value="Register" />
+            </div>
+        </div>
+        <hr>
+        @Html.ActionLink("Register with Google", "GoogleRegister", null, new { @class = "btn btn-google btn-user btn-block" })
+        @Html.ActionLink("Register with Facebook", "FacebookRegister", null, new { @class = "btn btn-facebook btn-user btn-block" })
+    </form>
+    <hr>
+    <div class="text-center">
+        @Html.ActionLink("Forgot Password?", "ForgotPassword", "Account",new {@class="small" })
+    </div>
+    <div class="text-center">
+        @Html.ActionLink("Already have an account? Login!", "Login", "Account", new { @class = "small" })
+    </div>
+
+}

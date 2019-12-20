@@ -1,0 +1,77 @@
+﻿
+@{
+    ViewBag.Title = "Import";
+}
+
+<form>
+    <div class="form_blockuri" style="text-align: center">
+        <div class="form-groupuri">
+
+            <div class="col-md-12" id="img_preview" style="max-height:400px;">
+                <span class="btn btn-default btn-file"><i class="fa fa-cloud-upload" aria-hidden="true"></i><input type="file" name="Image" id="Image" data-error="#errorExtension" /></span>
+                <div id="errorExtension"></div>
+            </div>
+            <input type="button" class="btn btn-success center-block" value="Upload" onClick="UploadFunction();">
+        </div>
+    </div>
+</form>
+<script>
+     $("#Image").on("change", function (e) {
+        var files = e.target.files,
+            filesLength = files.length;
+        $(".pip").remove();
+        $("#img_preview").append('<div class="loading_img"><div class="rect1"></div><div class="rect2"></div><div class="rect3"></div><div class="rect4"></div><div class="rect5"></div></div>');
+        for (var i = 0; i < filesLength; i++) {
+            var f = files[i]
+            var fileReader = new FileReader();
+            fileReader.onload = (function (e) {
+                var file = e.target;
+                var fileExt = f.name.match(/\.(.+)$/)[1];
+                var acceptedExtension = ['jpg', 'jpeg', 'png'];
+                if ($.inArray(fileExt, acceptedExtension) !== -1) {
+                    $("#img_preview").append('<div class="pip">' +
+                    '<img width="200" height="200" class="imageThumb" src="' + e.target.result + '" title="' + f.name + '" />' +
+                    '<span class="remove"><i class="fa fa-times" aria-hidden="true"></i></span>' +
+                    '</div>');
+                    $(".remove").click(function () {
+                        $(this).parent(".pip").remove();
+                        $("#Image").val("");
+                    });
+                    if ($('.pip').length > 0) {
+                        $('.loading_img').hide();
+                    };
+                    return;
+                }
+                $('.loading_img').hide();
+            });
+            fileReader.readAsDataURL(f);
+        }
+    });
+
+    function UploadFunction() {
+        var file = document.getElementById('Image'),
+            model = new FormData();
+        model.append('Image', file.files[0]);
+        $.ajax({
+            url: '@Url.Action("InsertFromFile","Photo")',
+            type: 'POST',
+            data: model,
+            processData: false,
+            contentType: false,
+            success: function (data)
+            {
+                if (data.status === 'OK') {
+                    alert('Photo Imported');
+                    console.log("New image was added");
+                } else {
+                    console.log("Error");
+                }
+            }
+        });
+    }
+</script>
+
+
+
+
+

@@ -1,0 +1,67 @@
+﻿
+@{
+    ViewBag.Title = "Photo";
+}
+
+<script>
+    $(document).ready(function () {
+        document.getElementById('UploadBut').style.display = "none";
+        Webcam.set({
+            width: 759,
+            height: 520,
+            image_format: 'jpeg',
+            jpeg_quality: 90
+        });
+        Webcam.attach('#my_camera');
+    });
+    window.onbeforeunload = confirmExit;
+    function confirmExit() {
+        Webcam.reset();
+    }
+</script>
+<div class="form-popup" id="myForm">
+    <div class="row">
+        <div class="col-md-6 col-lg-6 col-sm-6" style="height:75%;">
+            <div id="my_camera"></div>
+            <!-- A button for taking snaps -->
+            
+        </div>
+        <div class="col-md-6 col-lg-6 col-sm-6" style="height:75%;">
+            <input type="button" style="margin-top:40%;" class="btn btn-success center-block" value="Take Snapshot" onClick="take_snapshot()">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 col-lg-6 col-sm-6" style="height:75%;">
+            <div id="results">Your captured image will appear here...</div>
+        </div>
+        <div class="col-md-6 col-lg-6 col-sm-6" style="height:75%;">
+            <input id="UploadBut" type="button" style="margin-top:40%;" class="btn btn-success center-block" value="Upload Snapshot" onClick="upload_snapshot()">
+        </div>
+    </div>
+    <!-- First, include the Webcam.js JavaScript Library -->
+    <script src="/webcamjs/webcam.js"></script>
+    <!-- Code to handle taking the snapshot and displaying it locally -->
+    <script>
+        var data;
+        function take_snapshot() {
+            // take snapshot and get image data
+            Webcam.snap(function (data_uri) {
+                data = data_uri;
+                // display results in page
+                document.getElementById('results').innerHTML =
+                    '<img src="' +
+                    data_uri +
+                    '"/>';
+                document.getElementById('UploadBut').style.display = "block";
+            });
+        }
+        function upload_snapshot() {
+            Webcam.upload(data,
+                '/Photo/Capture',
+                function (code, text) {
+                    alert('Photo Uploaded');
+                });
+        }
+    </script>
+</div>
+

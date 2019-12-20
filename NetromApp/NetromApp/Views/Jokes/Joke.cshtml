@@ -1,0 +1,232 @@
+﻿@{
+    ViewBag.Title = "Jokes";
+}
+
+@section HeaderButton {
+    <a id="add_joke" class="link_add_new_item pull-right">
+        <i class="fa fa-plus" aria-hidden="true"></i>Add new Joke
+    </a>
+}
+<table class="table_block" id="joke_table" width="100%">
+    <thead>
+        <tr>
+            <th></th>
+            <th>Titlu</th>
+            <th>Gluma</th>
+            <th>Voturi</th>
+            <th>LastUpdate</th>
+            <th>Actiuni</th>
+        </tr>
+    </thead>
+</table>
+
+@section Css {
+    @Styles.Render("~/bundles/datatablescss")
+}
+@section Scripts {
+    @Scripts.Render("~/bundles/datatables")
+    @Scripts.Render("~/bundles/formsjs")
+    @Scripts.Render("~/bundles/shahash")
+
+    <script>
+        $(document)
+            .ready(function () {
+                var jokesTable,
+                    url_jokes = "@Url.Action("GetAllJokes", "Joke")",
+                // json encode data model
+                jokesTable = $('#joke_table')
+                .DataTable({
+                    "columns": [
+                        {
+                            data: 'Id',
+                            "render": function (data, type, row) {
+                                return row.Id;
+                            },
+                            "visible": false
+                        },
+                        {
+                            data: 'Titlu',
+                            "render": function (data, type, row) {
+                                return row.Titlu;
+                            }
+                        },
+                        {
+                            data: 'Gluma',
+                            "render": function (data, type, row) {
+                                return row.Gluma;
+                            }
+                        }, 
+                        {
+                            data: 'Voturi',
+                            "render": function (data, type, row) {
+                                return row.Voturi;
+                            }
+                        },
+                        {
+                            data: 'LastUpdate',
+                            "render": function (data, type, row) {
+                                var datetime = row.LastUpdated !== null ? new Date(parseInt(row.LastUpdated.replace("/Date(", "").replace(")/", ""), 10)) : 'Empty';
+                                return row.LastUpdated !== null ? $.dateTimeFormat(row.LastUpdated) : '';
+                            }
+                        },
+                        {
+                            data: 'Actions',
+                            "render": function (data, type, row) {
+                                var buttonsAction =
+                                    '<div class="actions_btn">' +
+                                        '<a id="edit" data-toggle="tooltip" data-placement="left" title="Edit"><i class="fa fa-pencil" aria-hidden="true"></i></a>' +
+                                            '<a id="delete" data-toggle="tooltip" data-placement="left" title="Delete"><i class="fa fa-times" aria-hidden="true"></i></a>' +
+                                        '</div>';
+                                return buttonsAction;
+                            },
+                            width: "130px",
+                            sortable: false,
+                            ordering: false
+                        }
+                    ],
+                    ajax: url_jokes,
+                    scroller: {
+                        loadingIndicator: true
+                    },
+                    "scrollCollapse": true,
+                    "info": true,
+                    "paging": true,
+                    "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+                    "oLanguage": {
+                        "sSearch": 'Search: &nbsp;',
+                        "sProcessing": "Loading...",
+                        "sLengthMenu": '',
+                        "sInfo": '',
+                        "sInfoEmpty": '',
+                        "sInfoPostFix": "",
+                        'sInfoFiltered': '&nbsp;filtered from total entries',
+                        "sLoadingRecords": 'Loading...',
+                        "sZeroRecords": 'NoRecords',
+                        "sEmptyTable": 'Empty Table',
+                        "oPaginate": {
+                            sProcessing: "<i class='fa fa-spinner' aria-hidden='true'></i>",
+                            "sPrevious": '<i class="fa fa-chevron-left" aria-hidden="true"></i>',
+                            "sNext": '<i class="fa fa-chevron-right" aria-hidden="true"></i>'
+                        }
+                    },
+                    "drawCallback": function (settings) {
+                        $('[data-toggle="tooltip"]').tooltip();
+                    },
+                });
+
+                // click event add
+                $("#add_joke")
+                    .on("click",
+                        function () {
+                            var datas = jokesTable.rows().data();
+
+                            var $data = {
+                                dialodTitle: 'Add New Joke',
+								postAction: '@Url.Action("AddJoke", "Joke")',
+                                dialogButtons: {
+                                    save: 'Save',
+                                    cancel: 'Cancel'
+                                },
+                                label: {
+                                    LabelTitlu: 'Titlu',
+                                    LabelJoke: 'Gluma',
+                                    LabelVotes: 'Voturi',
+                                    LabelUpdated: 'Ultima modificare',
+                                },
+                                validateMessage: {
+                                },
+                                notify: {
+                                title: 'Add Joke',
+                                contentSuccess: 'Joke successfully added',
+                                contentError: 'Error'
+                                },
+                                table: jokesTable,
+                                datas: datas,
+                            }
+                            AddJokeDialog($data);
+                        });
+
+
+                // click event edit
+                $('#joke_table tbody')
+                    .on('click',
+                        'tr td a#edit',
+                        function () {
+                            // get data from datatable by id selected
+                            var rowTable = $(this).parents('tr');
+							var data = jokesTable.row(rowTable).data();
+                            var datas = jokesTable.rows().data();
+
+                            var $data = {
+                                dialodTitle: 'Update Joke',
+								postAction: '@Url.Action("UpdateJoke", "Joke")',
+                                dialogButtons: {
+                                    save: 'Save',
+                                    cancel: 'Cancel'
+                                },
+                                label: {
+                                    LabelTitlu: 'Titlu',
+                                    LabelJoke: 'Gluma',
+                                    LabelVotes: 'Voturi',
+                                    LabelUpdated: 'Ultima modificare',
+                                },
+                                validateMessage: {
+                                },
+                                notify: {
+                                title: 'Update Joke',
+                                contentSuccess: 'Joke successfully updated',
+                                contentError: 'Error'
+                                },
+                                table: jokesTable,
+                                data: data,
+                                datas: datas,
+                                row: jokesTable.row(rowTable)
+                            }
+                            UpdateJokeDialog($data);
+                        });
+                // delete
+                $('#joke_table')
+                    .on('click',
+                        'tr td #delete',
+                        function () {
+                            var row = $(this).parents('tr');
+                            var datas = jokesTable.row(row).data();
+
+                            var $data = {
+                                dialodTitle: 'Delete Joke',
+                                postAction: '@Url.Action("DeleteJoke", "Joke")',
+                                dialogButtons: {
+                                    ok: 'Ok',
+                                    cancel: 'Cancel'
+                                },
+                                message: 'Confirm Delete Joke',
+                                datas: datas,
+                                notify: {
+                                title: 'Delete Joke',
+                                contentSuccess: 'Joke successfully deleted',
+                                contentError: 'Error'
+                                },
+                                row: jokesTable.row(row)
+                            }
+                            DeleteJokeDialog($data);
+                        });
+                $(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function (e) {
+                    var tab = $(e.target);
+                    var contentId = tab.attr("href");
+
+                    //This check if the tab is active
+                    if (tab.parent().hasClass('active')) {
+                        if (contentId === '#groups-tab') {
+                            groupsTable.ajax.reload();
+                        } else if (contentId === '#users-tab') {
+                            jokesTable.ajax.reload();
+                        }
+                    }
+                });
+
+            })
+    </script>
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/Content/dialog/joke")
+}
+

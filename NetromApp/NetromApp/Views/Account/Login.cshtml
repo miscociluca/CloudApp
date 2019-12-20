@@ -1,0 +1,60 @@
+﻿@using NetromApp.Models
+@model LoginViewModel
+@{
+    ViewBag.Title = "Log in";
+}
+
+@using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary("", new { @class = "text-danger" })
+    <div class="text-center">
+        <h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
+    </div>
+    <form class="user">
+        <div class="form-group">
+            
+            <div class="col-md-10">
+                @Html.LabelFor(m => m.Email)
+                @Html.TextBoxFor(m => m.Email, new { @class = "form-control form-control-user", id = "exampleInputEmail", placeholder = "Enter Email Address..." })
+                @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            
+            <div class="col-md-10">
+                @Html.LabelFor(m => m.Password)
+                @Html.PasswordFor(m => m.Password, new { @class = "form-control form-control-user", id = "exampleInputPassword", placeholder = "Password" })
+                @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="custom-control custom-checkbox small">
+                <div class="checkbox">
+                    @Html.CheckBoxFor(m => m.RememberMe, new { @class = "custom-control-input"})
+                    @Html.LabelFor(m => m.RememberMe, new { @class = "custom-control-label" })
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="btn btn-primary btn-user btn-block">
+                <input type="submit" value="Log in" class="btn btn-default" />
+            </div>
+        </div>
+        <hr>
+        @Html.ActionLink("Login with Google", "GoogleLogin", null, new { @class = "btn btn-google btn-user btn-block" })
+        @Html.ActionLink("Login with Facebook", "FacebookLogin", null, new { @class = "btn btn-facebook btn-user btn-block" })
+    </form>
+
+
+    <hr>
+    <div class="text-center">
+        @Html.ActionLink("Forgot your password?", "ForgotPassword","Account")
+    </div>
+    <div class="text-center">
+        @Html.ActionLink("Register as a new user", "Register","Account")
+    </div>
+}
+
+

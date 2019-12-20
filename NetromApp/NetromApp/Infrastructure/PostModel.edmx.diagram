@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="753ea8b1d9254e8bbf652a64e7de6802" Name="Diagram1">
+        <EntityTypeShape EntityType="PostModel.AspNetRole" Width="1.5" PointX="0.75" PointY="4.625" />
+        <EntityTypeShape EntityType="PostModel.AspNetUser" Width="1.5" PointX="3" PointY="3.375" />
+        <EntityTypeShape EntityType="PostModel.Comment" Width="1.5" PointX="7.5" PointY="9.875" />
+        <EntityTypeShape EntityType="PostModel.Like" Width="1.5" PointX="7.5" PointY="6.875" />
+        <EntityTypeShape EntityType="PostModel.Postari" Width="1.5" PointX="5.25" PointY="10" />
+        <AssociationConnector Association="PostModel.FK_Comments_AspNetUsers" />
+        <AssociationConnector Association="PostModel.FK_Likes_AspNetUsers" />
+        <AssociationConnector Association="PostModel.FK_Postari_AspNetUsers" />
+        <AssociationConnector Association="PostModel.FK_Comments_Postari" />
+        <AssociationConnector Association="PostModel.FK_Likes_Postari" />
+        <AssociationConnector Association="PostModel.AspNetUserRoles" />
+        <EntityTypeShape EntityType="PostModel.Joke" Width="1.5" PointX="5.25" PointY="4.375" />
+        <AssociationConnector Association="PostModel.FK_Jokes_Jokes" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
